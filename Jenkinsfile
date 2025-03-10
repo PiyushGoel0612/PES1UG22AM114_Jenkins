@@ -1,29 +1,38 @@
 pipeline {
-    agent any
-    
+    agent any  // Runs on any available Jenkins agent
+
     stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/PiyushGoel0612/PES1UG22AM114_Jenkins.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                sh 'g++ -o hello_exec hello.cpp'
+                script {
+                    echo 'Compiling hello.cpp...'
+                    sh 'g++ -o hello_exec hello.cpp'
+                }
             }
         }
-        
+
         stage('Test') {
             steps {
-                sh './hello_exec'
-            }
-        }
-        
-        stage('Deploy') {
-            steps {
-                echo 'Deploying Application...'
+                script {
+                    echo 'Running tests...'
+                    sh './hello_exec'  // Executes the compiled C++ program
+                }
             }
         }
     }
-    
+
     post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
         failure {
-            echo 'Pipeline Failed'
+            echo 'Pipeline failed!'
         }
     }
 }
